@@ -1,17 +1,23 @@
 package com.example.banking.web;
 
+import com.example.banking.DTO.BankAccountRequestDTO;
+import com.example.banking.DTO.BankAccountResponseDTO;
 import com.example.banking.Repository.BankAccountRepository;
 import com.example.banking.entities.BankAccount;
+import com.example.banking.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-
+import java.util.UUID;
+@RequestMapping("/api")
 @RestController
 public class AccountRestController {
     @Autowired
     private BankAccountRepository bankAccountRepository;
+    @Autowired
+    private AccountService accountService;
     @GetMapping("/bankAccounts")
     public List<BankAccount> bankAccounts(){
         return bankAccountRepository.findAll();
@@ -22,8 +28,8 @@ public class AccountRestController {
                 .orElseThrow(()->new RuntimeException(String.format("Account %s not found",id)));
     }
     @PostMapping("/bankAccounts")
-    public BankAccount save(BankAccount bankAccount){
-        return bankAccountRepository.save(bankAccount);
+    public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO requestDTO){
+        return accountService.addAccount(requestDTO);
     }
     @PostMapping("/bankAccounts/{id}")
 
